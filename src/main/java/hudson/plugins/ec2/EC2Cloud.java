@@ -760,7 +760,9 @@ public abstract class EC2Cloud extends Cloud {
         try {
             if (connection == null) {
                 synchronized (this) {
-                    connection = connect(createCredentialsProvider(), getEc2EndpointUrl());
+                    if(connection == null) {
+                        connection = connect(createCredentialsProvider(), getEc2EndpointUrl());
+                    }
                 }
             }
             return connection;
