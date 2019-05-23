@@ -325,11 +325,7 @@ public class SlaveTemplate implements Describable<SlaveTemplate> {
     }
 
     public String getDisplayName() {
-        return String.format("EC2 (%s) - %s", parent.getDisplayName(), description);
-    }
-
-    public String getSlaveName(String instanceId) {
-        return String.format("%s (%s)", getDisplayName(), instanceId);
+        return description + " (" + ami + ")";
     }
 
     String getZone() {
@@ -1005,7 +1001,7 @@ public class SlaveTemplate implements Describable<SlaveTemplate> {
 
                 LOGGER.info("Spot instance id in provision: " + spotInstReq.getSpotInstanceRequestId());
 
-                slaves.add(newSpotSlave(spotInstReq));
+                slaves.add(newSpotSlave(spotInstReq, slaveName));
             }
 
             return slaves;
@@ -1056,14 +1052,14 @@ public class SlaveTemplate implements Describable<SlaveTemplate> {
     }
 
     protected EC2OndemandSlave newOndemandSlave(Instance inst) throws FormException, IOException {
-        return new EC2OndemandSlave(getSlaveName(inst.getInstanceId()), inst.getInstanceId(), description, remoteFS, getNumExecutors(), labels, mode, initScript,
+        return new EC2OndemandSlave(inst.getInstanceId(), inst.getInstanceId(), description, remoteFS, getNumExecutors(), labels, mode, initScript,
                 tmpDir, Collections.emptyList(), remoteAdmin, jvmopts, stopOnTerminate, idleTerminationMinutes, inst.getPublicDnsName(),
                 inst.getPrivateDnsName(), EC2Tag.fromAmazonTags(inst.getTags()), parent.name,
                 useDedicatedTenancy, getLaunchTimeout(), amiType, connectionStrategy, maxTotalUses);
     }
 
-    protected EC2SpotSlave newSpotSlave(SpotInstanceRequest sir) throws FormException, IOException {
-        return new EC2SpotSlave(getSlaveName(sir.getSpotInstanceRequestId()), sir.getSpotInstanceRequestId(), description, remoteFS, getNumExecutors(), mode, initScript,
+    protected EC2SpotSlave newSpotSlave(SpotInstanceRequest sir, String name) throws FormException, IOException {
+        return new EC2SpotSlave(name, sir.getSpotInstanceRequestId(), description, remoteFS, getNumExecutors(), mode, initScript,
                 tmpDir, labels, Collections.emptyList(), remoteAdmin, jvmopts, idleTerminationMinutes, EC2Tag.fromAmazonTags(sir.getTags()), parent.name,
                 getLaunchTimeout(), amiType, connectionStrategy, maxTotalUses);
     }
