@@ -972,7 +972,8 @@ public class SlaveTemplate implements Describable<SlaveTemplate> {
                 if (spotInstReq == null) {
                     throw new AmazonClientException("Spot instance request is null");
                 }
-                String slaveName = spotInstReq.getSpotInstanceRequestId();
+                String slaveName = ami + "-" + spotInstReq.getSpotInstanceRequestId();
+
 
                 if (spotConfig.fallbackToOndemand) {
                     for (int i = 0; i < 2 && spotInstReq.getStatus().getCode().equals("pending-evaluation"); i++) {
