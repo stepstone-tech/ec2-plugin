@@ -612,6 +612,8 @@ public abstract class EC2Cloud extends Cloud {
         try {
             LOGGER.log(Level.INFO, "{0}. Attempting to provision slave needed by excess workload of " + excessWorkload + " units", t);
             int number = Math.max(excessWorkload / t.getNumExecutors(), 1);
+            number = Math.min(number, 30);
+            // lets keep provisioning to sane levels.
             final List<EC2AbstractSlave> slaves = getNewOrExistingAvailableSlave(t, number, false);
 
             if (slaves == null || slaves.isEmpty()) {
