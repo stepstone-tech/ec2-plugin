@@ -49,7 +49,7 @@ public class AmazonEC2CloudUnitTest {
     public void testInstaceCap() throws Exception {
         AmazonEC2Cloud cloud = new AmazonEC2Cloud("us-east-1", true, "abc", "us-east-1",
                                                     "{}", null, Collections.emptyList(),
-                                                    "roleArn", "roleSessionName");
+                                                    "roleArn", "roleSessionName", "");
         assertEquals(cloud.instanceCap, Integer.MAX_VALUE);
         assertEquals(cloud.getInstanceCapStr(), "");
 
@@ -57,7 +57,7 @@ public class AmazonEC2CloudUnitTest {
         final String capStr = String.valueOf(cap);
         cloud = new AmazonEC2Cloud("us-east-1", true, "abc", "us-east-1",
                                     "{}", capStr, Collections.emptyList(),
-                                    "roleArn", "roleSessionName");
+                                    "roleArn", "roleSessionName", "");
         assertEquals(cloud.instanceCap, cap);
         assertEquals(cloud.getInstanceCapStr(), capStr);
     }

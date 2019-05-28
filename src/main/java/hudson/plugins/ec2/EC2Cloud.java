@@ -140,6 +140,8 @@ public abstract class EC2Cloud extends Cloud {
 
     private final String roleSessionName;
 
+    private final int maxInstancesAtOnce;
+
     /**
      * Id of the {@link AmazonWebServicesCredentials} used to connect to Amazon ECS
      */
@@ -168,7 +170,7 @@ public abstract class EC2Cloud extends Cloud {
     private static AWSCredentialsProvider awsCredentialsProvider;
 
     protected EC2Cloud(String id, boolean useInstanceProfileForCredentials, String credentialsId, String privateKey,
-            String instanceCapStr, List<? extends SlaveTemplate> templates, String roleArn, String roleSessionName) {
+            String instanceCapStr, List<? extends SlaveTemplate> templates, String roleArn, String roleSessionName, String maxInstancesAtOnceStr) {
         super(id);
         this.useInstanceProfileForCredentials = useInstanceProfileForCredentials;
         this.roleArn = roleArn;
@@ -186,6 +188,11 @@ public abstract class EC2Cloud extends Cloud {
             this.instanceCap = Integer.MAX_VALUE;
         } else {
             this.instanceCap = Integer.parseInt(instanceCapStr);
+        }
+        if (maxInstancesAtOnceStr == null || maxInstancesAtOnceStr.isEmpty()) {
+            this.maxInstancesAtOnce = Integer.MAX_VALUE;
+        } else {
+            this.maxInstancesAtOnce = Integer.parseInt(maxInstancesAtOnceStr);
         }
 
         readResolve(); // set parents
@@ -608,7 +615,7 @@ public abstract class EC2Cloud extends Cloud {
         try {
             LOGGER.log(Level.INFO, "{0}. Attempting to provision slave needed by excess workload of " + excessWorkload + " units", t);
             int number = Math.max(excessWorkload / t.getNumExecutors(), 1);
-            number = Math.min(number, 30);
+            number = Math.min(number, maxInstancesAtOnce);
             // lets keep provisioning to sane levels.
             final List<EC2AbstractSlave> slaves = getNewOrExistingAvailableSlave(t, number, false);
 

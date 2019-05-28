@@ -52,6 +52,9 @@ THE SOFTWARE.
     <f:entry title="${%Session Name}" field="roleSessionName">
       <f:textbox />
     </f:entry>
+    <f:entry title="${%Max instances at once}" field="maxInstancesAtOnce" description="Set this to add cap provisioning instances at once">
+      <f:textbox />
+    </f:entry>
   </f:advanced>
   <f:validateButton title="${%Generate Key}" progress="${%Generate...}" method="generateKey" with="region,useInstanceProfileForCredentials,credentialsId,roleArn,roleSessionName" />
   <f:validateButton title="${%Test Connection}" progress="${%Testing...}" method="testConnection" with="region,useInstanceProfileForCredentials,credentialsId,privateKey,roleArn,roleSessionName" />
