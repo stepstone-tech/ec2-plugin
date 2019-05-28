@@ -87,15 +87,8 @@ public class EC2RetentionStrategy extends RetentionStrategy<EC2Computer> impleme
 
             this.idleTerminationMinutes = value;
         }
-        this.clock = Clock.systemUTC();
     }
 
-
-    EC2RetentionStrategy(String idleTerminationMinutes, Clock clock, long nextCheckAfter) {
-        this(idleTerminationMinutes);
-        this.clock = clock;
-        this.nextCheckAfter = nextCheckAfter;
-    }
 
     long getNextCheckAfter() {
         return this.nextCheckAfter;
@@ -238,6 +231,7 @@ public class EC2RetentionStrategy extends RetentionStrategy<EC2Computer> impleme
 
     protected Object readResolve() {
         checkLock = new ReentrantLock(false);
+        clock = Clock.systemUTC();
         return this;
     }
 
