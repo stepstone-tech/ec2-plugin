@@ -90,12 +90,6 @@ public class EC2RetentionStrategy extends RetentionStrategy<EC2Computer> impleme
     }
 
 
-    EC2RetentionStrategy(String idleTerminationMinutes, Clock clock, long nextCheckAfter) {
-        this(idleTerminationMinutes);
-        this.clock = clock;
-        this.nextCheckAfter = nextCheckAfter;
-    }
-
     long getNextCheckAfter() {
         return this.nextCheckAfter;
     }

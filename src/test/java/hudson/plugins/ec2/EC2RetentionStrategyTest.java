@@ -3,10 +3,13 @@ package hudson.plugins.ec2;
 import com.amazonaws.AmazonClientException;
 import hudson.slaves.NodeProperty;
 import hudson.model.Executor;
+import hudson.util.ReflectionUtils;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.lang.reflect.Field;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -173,8 +176,14 @@ public class EC2RetentionStrategyTest {
             EC2RetentionStrategy rs;
             if (i > 0) {
                 Clock clock = Clock.fixed(now.plusSeconds(startingUptime), zoneId);
-                rs = new EC2RetentionStrategy("1", clock, nextCheckAfter);
 
+                rs = new EC2RetentionStrategy("1");
+                Field clockField = EC2RetentionStrategy.class.getDeclaredField("clock");
+                Field nextCheckAfterField = EC2RetentionStrategy.class.getDeclaredField("nextCheckAfter");
+                clockField.setAccessible(true);
+                nextCheckAfterField.setAccessible(true);
+                ReflectionUtils.setField(clockField, rs, clock);
+                ReflectionUtils.setField(nextCheckAfterField, rs, nextCheckAfter);
             } else {
                 rs = new EC2RetentionStrategy("1");
             }
